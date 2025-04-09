@@ -1,0 +1,250 @@
+-- Script Hub GUI (Executor Edition) with Animated Dropdown and Theme Support
+
+-- Configuration: Add your script URLs here
+local scripts = {
+    { Name = "Aimbot", URL = "https://raw.githubusercontent.com/Jakee8718/dh/refs/heads/main/aim.lua" },
+    { Name = "ESP", URL = "https://raw.githubusercontent.com/Jakee8718/dh/refs/heads/main/esp.lua" },
+    { Name = "Teleport", URL = "https://raw.githubusercontent.com/Jakee8718/dh/refs/heads/main/tp.lua" },
+}
+
+-- Cleanup if ScriptHubUI already exists
+if game.CoreGui:FindFirstChild("ScriptHubUI") then
+    game.CoreGui:FindFirstChild("ScriptHubUI"):Destroy()
+end
+
+-- Create GUI
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "ScriptHubUI"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+
+-- Main Frame (Rounded, draggable)
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.new(0, 450, 0, 350) -- Increased size
+main.Position = UDim2.new(0.5, -225, 0.5, -125) -- Adjusted for better centering
+main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark grey background
+main.Active = true
+main.Draggable = true
+main.Name = "Main"
+local uicorner = Instance.new("UICorner", main)
+uicorner.CornerRadius = UDim.new(0, 12)
+
+-- Title
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1, -40, 0, 60)
+title.Position = UDim2.new(0.5, -205, 0, 5)
+title.Text = "RS"
+title.TextColor3 = Color3.fromRGB(104, 23, 235)  -- dark purple
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+title.TextSize = 50
+title.TextXAlignment = Enum.TextXAlignment.Center
+title.TextYAlignment = Enum.TextYAlignment.Center
+
+-- Exit Button
+local exit = Instance.new("TextButton", main)
+exit.Text = "X"
+exit.Size = UDim2.new(0, 30, 0, 30)
+exit.Position = UDim2.new(1, -35, 0, 5)
+exit.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+exit.TextColor3 = Color3.new(104, 23, 235)
+exit.Font = Enum.Font.GothamBold
+exit.TextSize = 18
+local uicornerExit = Instance.new("UICorner", exit)
+uicornerExit.CornerRadius = UDim.new(0, 8)
+
+-- Tabs
+local tabs = Instance.new("Frame", main)
+tabs.Size = UDim2.new(1, 0, 0, 40) -- Increased tab size for better spacing
+tabs.Position = UDim2.new(0, 0, 0, 70)
+tabs.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+
+local tabScripts = Instance.new("TextButton", tabs)
+tabScripts.Size = UDim2.new(0.5, 0, 1, 0)
+tabScripts.Text = "Scripts"
+tabScripts.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+tabScripts.TextColor3 = Color3.fromRGB(104, 23, 235)
+tabScripts.Font = Enum.Font.Gotham
+tabScripts.TextSize = 16
+local uicornerScripts = Instance.new("UICorner", tabScripts)
+uicornerScripts.CornerRadius = UDim.new(0, 12)
+
+local tabSettings = Instance.new("TextButton", tabs)
+tabSettings.Size = UDim2.new(0.5, 0, 1, 0)
+tabSettings.Position = UDim2.new(0.5, 0, 0, 0)
+tabSettings.Text = "Settings"
+tabSettings.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+tabSettings.TextColor3 = Color3.fromRGB(104, 23, 235)
+tabSettings.Font = Enum.Font.Gotham
+tabSettings.TextSize = 16
+local uicornerSettings = Instance.new("UICorner", tabSettings)
+uicornerSettings.CornerRadius = UDim.new(0, 12)
+
+-- Script toggles section (Expanded size to fit better)
+local scriptsFrame = Instance.new("Frame", main)
+scriptsFrame.Size = UDim2.new(1, 0, 0, 150)
+scriptsFrame.Position = UDim2.new(0, 0, 0, 110) -- Adjusted position
+scriptsFrame.BackgroundTransparency = 1
+scriptsFrame.Visible = true
+
+local scriptStates = {}
+for i, data in ipairs(scripts) do
+    local toggle = Instance.new("TextButton", scriptsFrame)
+    toggle.Size = UDim2.new(0.9, 0, 0, 35)
+    toggle.Position = UDim2.new(0.05, 0, 0, (i - 1) * 45)
+    toggle.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    toggle.TextColor3 = Color3.fromRGB(104, 23, 235)
+    toggle.Text = data.Name .. " (OFF)"
+    toggle.Font = Enum.Font.GothamBold
+    toggle.TextSize = 16
+    toggle.AutoButtonColor = false
+    local uicornerToggle = Instance.new("UICorner", toggle)
+    uicornerToggle.CornerRadius = UDim.new(0, 8)
+
+    local isEnabled = false
+    scriptStates[data.Name] = isEnabled
+
+    toggle.MouseButton1Click:Connect(function()
+        isEnabled = not isEnabled
+        scriptStates[data.Name] = isEnabled
+        toggle.Text = data.Name .. (isEnabled and " (ON)" or " (OFF)")
+        if isEnabled then
+            pcall(function()
+                loadstring(game:HttpGet(data.URL))()
+            end)
+        end
+    end)
+end
+
+-- Settings section
+local settingsFrame = Instance.new("Frame", main)
+settingsFrame.Size = UDim2.new(1, 0, 0, 150)
+settingsFrame.Position = UDim2.new(0, 0, 0, 110)
+settingsFrame.BackgroundTransparency = 1
+settingsFrame.Visible = false
+
+-- Theme Dropdown
+local themeDropdown = Instance.new("TextButton", settingsFrame)
+themeDropdown.Size = UDim2.new(0.8, 0, 0, 30)
+themeDropdown.Position = UDim2.new(0.1, 0, 0, 0)
+themeDropdown.Text = "Select Theme ▼"
+themeDropdown.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+themeDropdown.TextColor3 = Color3.fromRGB(104, 23, 235)
+themeDropdown.Font = Enum.Font.Gotham
+themeDropdown.TextSize = 16
+local uicornerDropdown = Instance.new("UICorner", themeDropdown)
+uicornerDropdown.CornerRadius = UDim.new(0, 8)
+
+local arrow = Instance.new("TextLabel", themeDropdown)
+arrow.Size = UDim2.new(0, 20, 1, 0)
+arrow.Position = UDim2.new(1, -20, 0, 0)
+arrow.BackgroundTransparency = 1
+arrow.Text = "▼"
+arrow.TextColor3 = Color3.fromRGB(255, 255, 255)
+arrow.Font = Enum.Font.Gotham
+arrow.TextSize = 16
+
+-- Dropdown menu visibility
+local isDropdownOpen = false
+local dropdownMenu = Instance.new("Frame", settingsFrame)
+dropdownMenu.Size = UDim2.new(0.8, 0, 0, 100)
+dropdownMenu.Position = UDim2.new(0.1, 0, 0, 50)
+dropdownMenu.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+dropdownMenu.Visible = false
+local uicornerDropdownMenu = Instance.new("UICorner", dropdownMenu)
+uicornerDropdownMenu.CornerRadius = UDim.new(0, 8)
+
+-- Theme options
+local redThemeBtn = Instance.new("TextButton", dropdownMenu)
+redThemeBtn.Size = UDim2.new(0.75, 0, 0, 40)
+redThemeBtn.Position = UDim2.new(0.125, 0, 0, 0)
+redThemeBtn.Text = "Red"
+redThemeBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+redThemeBtn.TextColor3 = Color3.fromRGB(207, 21, 21)
+redThemeBtn.Font = Enum.Font.GothamBold
+redThemeBtn.TextSize = 16
+local uicornerRed = Instance.new("UICorner", redThemeBtn)
+uicornerRed.CornerRadius = UDim.new(0, 12)
+
+redThemeBtn.MouseButton1Click:Connect(function()
+    -- Change text color to red
+    title.TextColor3 = Color3.fromRGB(255, 0, 0)
+    for _,v in pairs(scriptsFrame:GetChildren()) do
+        if v:IsA("TextButton") then
+            v.TextColor3 = Color3.fromRGB(255, 0, 0)
+        end
+    end
+    tabScripts.TextColor3 = Color3.fromRGB(255, 0, 0)
+    tabSettings.TextColor3 = Color3.fromRGB(255, 0, 0)
+end)
+
+-- Dropdown menu toggle logic
+themeDropdown.MouseButton1Click:Connect(function()
+    isDropdownOpen = not isDropdownOpen
+    dropdownMenu.Visible = isDropdownOpen
+    arrow.Text = isDropdownOpen and "▲" or "▼"
+end)
+
+-- Unload button in settings
+local unloadBtn = Instance.new("TextButton", settingsFrame)
+unloadBtn.Size = UDim2.new(0.5, 0, 0, 40)
+unloadBtn.Position = UDim2.new(0.25, 0, 0, 150)
+unloadBtn.Text = "Unload"
+unloadBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+unloadBtn.TextColor3 = Color3.fromRGB(104, 23, 235)
+unloadBtn.Font = Enum.Font.GothamBold
+unloadBtn.TextSize = 16
+local uicornerUnload = Instance.new("UICorner", unloadBtn)
+uicornerUnload.CornerRadius = UDim.new(0, 8)
+
+unloadBtn.MouseButton1Click:Connect(function()
+    -- Clean up running scripts
+    _G.AimbotRunning = false
+    _G.ESPRunning = false
+    _G.TPRunning = false
+
+    -- Destroy the GUI
+    gui:Destroy()
+    script:Destroy()
+end)
+
+-- Tab Switching Logic
+tabScripts.MouseButton1Click:Connect(function()
+    scriptsFrame.Visible = true
+    settingsFrame.Visible = false
+end)
+
+tabSettings.MouseButton1Click:Connect(function()
+    settingsFrame.Visible = true
+    scriptsFrame.Visible = false
+end)
+
+-- Minimize / Restore with Right Shift
+local UserInputService = game:GetService("UserInputService")
+local isVisible = true
+local savedPos = main.Position
+
+UserInputService.InputBegan:Connect(function(input, gp)
+    if gp then return end
+    if input.KeyCode == Enum.KeyCode.RightShift then
+        isVisible = not isVisible
+        if isVisible then
+            main.Visible = true
+            main.Position = savedPos
+        else
+            savedPos = main.Position
+            main.Visible = false
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "RS Hub",
+                Text = "Press Right-Shift to toggle GUI",
+                Duration = 2.5
+            })
+        end
+    end
+end)
+
+-- Exit Button
+exit.MouseButton1Click:Connect(function()
+    main.Visible = false
+    isVisible = false
+end)
