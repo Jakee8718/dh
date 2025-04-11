@@ -1,35 +1,37 @@
--- Place this near the top of fly.lua
-if _G.FlyConnection then
-	_G.FlyConnection:Disconnect()
-	_G.FlyConnection = nil
-end
-if _G.Flying then
-	_G.Flying = false
-end
-if _G.ToggleFlyKey then
-	_G.ToggleFlyKey:Disconnect()
-	_G.ToggleFlyKey = nil
-end
-if _G.DisableFly then
-	_G.DisableFly()
-end
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 
--- Add this somewhere in the main fly script:
-_G.Flying = false
-_G.DisableFly = function()
-	_G.Flying = false
-	if _G.ToggleFlyKey then
-		_G.ToggleFlyKey:Disconnect()
-		_G.ToggleFlyKey = nil
-	end
-end
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
--- Then your normal toggle fly logic:
-local UIS = game:GetService("UserInputService")
+local flying = false
+local speed = 2
 
-_G.ToggleFlyKey = UIS.InputBegan:Connect(function(input, gp)
+UserInputService.InputBegan:Connect(function(input, gp)
 	if not gp and input.KeyCode == Enum.KeyCode.F then
-		_G.Flying = not _G.Flying
-		-- Start/stop fly logic
+		if _G.FlyToggleState then
+			flying = not flying
+		end
+	end
+end)
+
+RunService.RenderStepped:Connect(function()
+	if flying and _G.FlyToggleState then
+		local moveDir = Vector3.new()
+		if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+			moveDir = moveDir + (workspace.CurrentCamera.CFrame.LookVector)
+		end
+		if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+			moveDir = moveDir - (workspace.CurrentCamera.CFrame.LookVector)
+		end
+		if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+			moveDir = moveDir - (workspace.CurrentCamera.CFrame.RightVector)
+		end
+		if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+			moveDir = moveDir + (workspace.CurrentCamera.CFrame.RightVector)
+		end
+		humanoidRootPart.Velocity = moveDir.Unit * speed
 	end
 end)
