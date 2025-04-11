@@ -1,25 +1,29 @@
-if _G.FlyConnection then
-	-- Toggle off
-	_G.FlyConnection:Disconnect()
-	_G.FlyConnection = nil
-	_G.Flying = false
-	print("Fly: OFF")
-	return
-end
+-- Define fly state
+local isFlying = false
 
--- Toggle on
+-- Toggle fly on F key press
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local player = game:GetService("Players").LocalPlayer
 local char = player.Character or player.CharacterAdded:Wait()
 local hrp = char:WaitForChild("HumanoidRootPart")
 
-_G.Flying = true
+-- Variables for flying speed and key inputs
 local speed = 2
 local keysDown = {}
 
+-- Handle key inputs
 UIS.InputBegan:Connect(function(input, typing)
 	if typing then return end
+	if input.KeyCode == Enum.KeyCode.F then
+		isFlying = not isFlying
+		if isFlying then
+			print("Fly: ON")
+		else
+			print("Fly: OFF")
+		end
+	end
+
 	keysDown[input.KeyCode] = true
 end)
 
@@ -27,8 +31,9 @@ UIS.InputEnded:Connect(function(input)
 	keysDown[input.KeyCode] = false
 end)
 
-_G.FlyConnection = RunService.RenderStepped:Connect(function()
-	if _G.Flying and hrp then
+-- Fly control loop
+RunService.RenderStepped:Connect(function()
+	if isFlying and hrp then
 		local cam = workspace.CurrentCamera
 		local moveVec = Vector3.new(0, 0, 0)
 
@@ -45,5 +50,3 @@ _G.FlyConnection = RunService.RenderStepped:Connect(function()
 		end
 	end
 end)
-
-print("Fly: ON")
