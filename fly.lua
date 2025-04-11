@@ -1,37 +1,41 @@
-local UserInputService = game:GetService("UserInputService")
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
-local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+-- Fly Script
+local player = game:GetService("Players").LocalPlayer
+local UIS = game:GetService("UserInputService")
+local RS = game:GetService("RunService")
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
 
 local flying = false
-local speed = 2
+local speed = 50
+local conn -- connection holder
 
-UserInputService.InputBegan:Connect(function(input, gp)
-	if not gp and input.KeyCode == Enum.KeyCode.F then
-		if _G.FlyToggleState then
-			flying = not flying
-		end
+local function onInput(input, gameProcessed)
+	if input.KeyCode == Enum.KeyCode.F and not gameProcessed then
+		flying = not flying
 	end
-end)
+end
 
-RunService.RenderStepped:Connect(function()
-	if flying and _G.FlyToggleState then
-		local moveDir = Vector3.new()
-		if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-			moveDir = moveDir + (workspace.CurrentCamera.CFrame.LookVector)
-		end
-		if UserInputService:IsKeyDown(Enum.KeyCode.S) then
-			moveDir = moveDir - (workspace.CurrentCamera.CFrame.LookVector)
-		end
-		if UserInputService:IsKeyDown(Enum.KeyCode.A) then
-			moveDir = moveDir - (workspace.CurrentCamera.CFrame.RightVector)
-		end
-		if UserInputService:IsKeyDown(Enum.KeyCode.D) then
-			moveDir = moveDir + (workspace.CurrentCamera.CFrame.RightVector)
-		end
-		humanoidRootPart.Velocity = moveDir.Unit * speed
+local function flyLoop()
+	if flying then
+		local cam = workspace.CurrentCamera
+		local move = Vector3.zero
+		if UIS:IsKeyDown(Enum.KeyCode.W) then move += cam.CFrame.LookVector end
+		if UIS:IsKeyDown(Enum.KeyCode.S) then move -= cam.CFrame.LookVector end
+		if UIS:IsKeyDown(Enum.KeyCode.A) then move -= cam.CFrame.RightVector end
+		if UIS:IsKeyDown(Enum.KeyCode.D) then move += cam.CFrame.RightVector end
+		hrp.Velocity = move.Unit * speed
+	else
+		hrp.Velocity = Vector3.zero
 	end
-end)
+end
+
+local inputConn = UIS.InputBegan:Connect(onInput)
+local renderConn = RS.RenderStepped:Connect(flyLoop)
+
+-- Save disconnect method globally so GUI can call it
+_G.FlyDisconnect = function()
+	inputConn:Disconnect()
+	renderConn:Disconnect()
+	flying = false
+	hrp.Velocity = Vector3.zero
+end
