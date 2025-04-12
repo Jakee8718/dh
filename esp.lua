@@ -14,7 +14,6 @@ getgenv().espCleanup = function()
     print("ESP Cleaned up!")
 end
 
-
 local ESP_ENABLED = true -- Toggle ESP on/off
 local NAMETAGS_ENABLED = false -- Toggle NameTags on/off with key
 local COLOR = Color3.fromRGB(255, 0, 0) -- Box color
@@ -34,23 +33,21 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
-local Box = Drawing.new("Square")
-table.insert(drawings, Box)  -- add this line
+local function CreateESPBox(character, player)
+    local Box = Drawing.new("Square")
+    table.insert(drawings, Box)  -- Track for cleanup
+    Box.Visible = false
+    Box.Color = COLOR
+    Box.Thickness = LINE_THICKNESS
+    Box.Filled = false
 
-Box.Visible = false
-Box.Color = COLOR
-Box.Thickness = LINE_THICKNESS
-Box.Filled = false
-
-local NameTag = Drawing.new("Text")
-table.insert(drawings, NameTag)  -- add this line
-
-NameTag.Visible = false
-NameTag.Color = COLOR
-NameTag.Size = 16
-NameTag.Center = true
-NameTag.Outline = true
-
+    local NameTag = Drawing.new("Text")
+    table.insert(drawings, NameTag)  -- Track for cleanup
+    NameTag.Visible = false
+    NameTag.Color = COLOR
+    NameTag.Size = 16
+    NameTag.Center = true
+    NameTag.Outline = true
 
     local function Update()
         while character and character.Parent do
@@ -59,12 +56,10 @@ NameTag.Outline = true
                 if HumanoidRootPart then
                     local Vector, OnScreen = Camera:WorldToViewportPoint(HumanoidRootPart.Position)
                     if OnScreen then
-                        -- ESP Box
                         Box.Size = Vector2.new(50, 100)
                         Box.Position = Vector2.new(Vector.X - 25, Vector.Y - 50)
                         Box.Visible = true
 
-                        -- NameTag
                         if NAMETAGS_ENABLED then
                             local distance = math.floor((HumanoidRootPart.Position - Camera.CFrame.Position).Magnitude)
                             NameTag.Text = string.format("%s (@%s)\n[%d studs]", player.DisplayName, player.Name, distance)
