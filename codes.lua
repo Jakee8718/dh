@@ -14,5 +14,5 @@ local function redeemPromoCode(code)
     
     game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
 end
-redeemPromoCode ("50MDHC", "Duck", "Watch", "SHRIMP", "VIP", "2025", "THANKSGIVING24", "DACARNIVAL",
+redeemPromoCode("50MDHC", "Duck", "Watch", "SHRIMP", "VIP", "2025", "THANKSGIVING24", "DACARNIVAL",
         "HALLOWEEN2024", "TRADEME!", "DAUP", "pumpkins2023")
