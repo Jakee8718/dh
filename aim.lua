@@ -6,6 +6,9 @@ local uis = game:GetService("UserInputService")
 local cam = ws.CurrentCamera
 local aim = false
 
+-- A global variable to disconnect the aimbot when disabled
+_G.aimbot = nil
+
 local function getClosest()
     local closest, dist = nil, math.huge
     for _, v in ipairs(p:GetPlayers()) do
@@ -35,7 +38,8 @@ uis.InputEnded:Connect(function(i)
     end
 end)
 
-rs.RenderStepped:Connect(function()
+-- Aimbot logic
+_G.aimbot = rs.RenderStepped:Connect(function()
     if aim then
         local t = getClosest()
         if t then
@@ -43,3 +47,5 @@ rs.RenderStepped:Connect(function()
         end
     end
 end)
+
+print("Aimbot script loaded!")
