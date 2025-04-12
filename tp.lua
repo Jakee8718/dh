@@ -19,7 +19,7 @@ mainFrame.Draggable = true
 
 titleLabel.Name = "TitleLabel"
 titleLabel.Parent = mainFrame
-titleLabel.BackgroundColor3 = Color3.fromRGB(102, 102, 102)  -- was (0.4,0.4,0.4)
+titleLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)  -- was (0.4,0.4,0.4)
 titleLabel.BorderSizePixel = 0
 titleLabel.Size = UDim2.new(1, 0, 0, 30)
 titleLabel.Font = Enum.Font.SourceSansBold
@@ -29,7 +29,7 @@ titleLabel.TextSize = 20
 
 playerListFrame.Name = "PlayerListFrame"
 playerListFrame.Parent = mainFrame
-playerListFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+playerListFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 playerListFrame.BorderSizePixel = 0
 playerListFrame.Position = UDim2.new(0, 20, 0, 40)
 playerListFrame.Size = UDim2.new(0, 260, 0, 140)
