@@ -48,4 +48,3 @@ _G.aimbot = rs.RenderStepped:Connect(function()
     end
 end)
 
-print("Aimbot script loaded!")
