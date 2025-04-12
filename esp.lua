@@ -1,3 +1,20 @@
+if getgenv().espCleanup then
+    getgenv().espCleanup()
+end
+
+local drawings = {}
+
+getgenv().espCleanup = function()
+    for _, obj in pairs(drawings) do
+        if obj.Remove then
+            obj:Remove()
+        end
+    end
+    drawings = {}
+    print("ESP Cleaned up!")
+end
+
+
 local ESP_ENABLED = true -- Toggle ESP on/off
 local NAMETAGS_ENABLED = false -- Toggle NameTags on/off with key
 local COLOR = Color3.fromRGB(255, 0, 0) -- Box color
