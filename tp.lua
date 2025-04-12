@@ -29,7 +29,7 @@ titleLabel.TextSize = 20
 
 playerListFrame.Name = "PlayerListFrame"
 playerListFrame.Parent = mainFrame
-playerListFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+playerListFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 playerListFrame.BorderSizePixel = 0
 playerListFrame.Position = UDim2.new(0, 20, 0, 40)
 playerListFrame.Size = UDim2.new(0, 260, 0, 140)
@@ -49,7 +49,7 @@ local function updatePlayerList()
             local playerButton = Instance.new("TextButton")
             playerButton.Name = otherPlayer.Name
             playerButton.Parent = playerListFrame
-            playerButton.BackgroundColor3 = Color3.fromRGB(153, 153, 153) -- was (0.6, 0.6, 0.6)
+            playerButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- was (0.6, 0.6, 0.6)
             playerButton.BorderSizePixel = 0
             playerButton.Size = UDim2.new(0, 240, 0, 30)
             playerButton.Position = UDim2.new(0, 10, 0, yOffset)
