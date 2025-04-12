@@ -1,4 +1,4 @@
-local ESP_ENABLED = true -- Toggle ESP on/off
+local ESP_ENABLED = false -- Default is off
 local NAMETAGS_ENABLED = false -- Toggle NameTags on/off with key
 local COLOR = Color3.fromRGB(255, 0, 0) -- Box color
 local LINE_THICKNESS = 2
@@ -18,6 +18,11 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
         NAMETAGS_ENABLED = not NAMETAGS_ENABLED
     end
 end)
+
+-- Function to enable ESP
+function EnableESP()
+    ESP_ENABLED = true  -- Turn on ESP
+end
 
 -- Function to disable ESP
 function DisableESP()
@@ -103,3 +108,8 @@ end
 Players.PlayerAdded:Connect(OnPlayerAdded)
 
 print("ESP with NameTags Script Loaded!")
+
+return {
+    EnableESP = EnableESP,
+    DisableESP = DisableESP
+}
