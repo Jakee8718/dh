@@ -1,6 +1,3 @@
-if _G.FlySetup then return end
-_G.FlySetup = true
-
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
