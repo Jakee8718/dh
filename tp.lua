@@ -55,7 +55,7 @@ local function updatePlayerList()
             playerButton.Position = UDim2.new(0, 10, 0, yOffset)
             playerButton.Font = Enum.Font.SourceSans
             playerButton.Text = string.format("%s (@%s)", otherPlayer.DisplayName, otherPlayer.Name)
-            playerButton.TextColor3 = Color3.new(235, 0, 4)
+            playerButton.TextColor3 = Color3.fromRGB(235, 0, 4)
             playerButton.TextSize = 16
 
             playerButton.MouseButton1Click:Connect(function()
