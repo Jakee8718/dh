@@ -1,18 +1,25 @@
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
-local player = game:GetService("Players").LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local hrp = char:WaitForChild("HumanoidRootPart")
-
--- Make sure this only runs once
-if _G.FlyConnection then return end
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
 local flying = false
 local speed = 2
 local keysDown = {}
-local connection -- for movement loop
+local connection
+local hrp
 
--- Input tracking
+-- Re-setup HumanoidRootPart when character loads
+local function setupCharacter(char)
+	hrp = char:WaitForChild("HumanoidRootPart")
+
+	if _G.FlyActive then
+		stopFlying() -- Stop any leftover connections
+		startFlying() -- Restart fresh for new character
+	end
+end
+
+-- Input tracking and movement logic
 local function startFlying()
 	if _G.FlyConnection then return end
 
@@ -33,7 +40,7 @@ local function startFlying()
 	_G.FlyConnection = RunService.RenderStepped:Connect(function()
 		if flying and hrp then
 			local cam = workspace.CurrentCamera
-			local moveVec = Vector3.new(0, 0, 0)
+			local moveVec = Vector3.new()
 
 			if keysDown[Enum.KeyCode.W] then
 				moveVec += cam.CFrame.LookVector
@@ -78,7 +85,15 @@ local function stopFlying()
 	flying = false
 end
 
--- Toggle logic for the button to use:
+-- Character spawn handler
+player.CharacterAdded:Connect(setupCharacter)
+
+-- Initial setup (for current character)
+if player.Character then
+	setupCharacter(player.Character)
+end
+
+-- Toggle logic
 if _G.FlyActive then
 	_G.FlyActive = false
 	stopFlying()
