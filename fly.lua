@@ -1,25 +1,24 @@
+if _G.FlySetup then return end
+_G.FlySetup = true
+
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
+if _G.FlySetup then return end
+_G.FlySetup = true
+
 local flying = false
 local speed = 2
 local keysDown = {}
-local connection
 local hrp
 
--- Re-setup HumanoidRootPart when character loads
-local function setupCharacter(char)
+local function updateHRP()
+	local char = player.Character or player.CharacterAdded:Wait()
 	hrp = char:WaitForChild("HumanoidRootPart")
-
-	if _G.FlyActive then
-		stopFlying() -- Stop any leftover connections
-		startFlying() -- Restart fresh for new character
-	end
 end
 
--- Input tracking and movement logic
 local function startFlying()
 	if _G.FlyConnection then return end
 
@@ -85,15 +84,20 @@ local function stopFlying()
 	flying = false
 end
 
--- Character spawn handler
-player.CharacterAdded:Connect(setupCharacter)
+-- Reconnect after death
+player.CharacterAdded:Connect(function()
+	task.wait(1) -- wait for character to fully load
+	updateHRP()
+	if _G.FlyActive then
+		stopFlying()
+		startFlying()
+	end
+end)
 
--- Initial setup (for current character)
-if player.Character then
-	setupCharacter(player.Character)
-end
+-- Initial setup
+updateHRP()
 
--- Toggle logic
+-- Toggle via GUI
 if _G.FlyActive then
 	_G.FlyActive = false
 	stopFlying()
