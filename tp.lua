@@ -10,7 +10,7 @@ teleportGui.Parent = player.PlayerGui
 
 mainFrame.Name = "MainFrame"
 mainFrame.Parent = teleportGui
-mainFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+mainFrame.BackgroundColor3 = Color3.new(20, 20, 20)
 mainFrame.BorderSizePixel = 0
 mainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
 mainFrame.Size = UDim2.new(0, 300, 0, 200)
@@ -24,7 +24,7 @@ titleLabel.BorderSizePixel = 0
 titleLabel.Size = UDim2.new(1, 0, 0, 30)
 titleLabel.Font = Enum.Font.SourceSansBold
 titleLabel.Text = "RS - TP GUI"
-titleLabel.TextColor3 = Color3.new(235, 0, 4)
+titleLabel.TextColor3 = Color3.fromRGB(235, 0, 4)
 titleLabel.TextSize = 20
 
 playerListFrame.Name = "PlayerListFrame"
