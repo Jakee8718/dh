@@ -10,6 +10,8 @@ local UserInputService = game:GetService("UserInputService")
 local Camera = game.Workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
+local drawings = {}  -- Store drawings for cleanup
+
 -- Toggle NameTags on key press "N"
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if not gameProcessed and input.KeyCode == Enum.KeyCode.N then
@@ -17,12 +19,21 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
+-- Function to disable ESP
+function DisableESP()
+    ESP_ENABLED = false  -- Turn off ESP
+    for _, drawing in pairs(drawings) do
+        drawing.Visible = false  -- Hide all ESP elements
+    end
+end
+
 local function CreateESPBox(character, player)
     local Box = Drawing.new("Square")
     Box.Visible = false
     Box.Color = COLOR
     Box.Thickness = LINE_THICKNESS
     Box.Filled = false
+    table.insert(drawings, Box)
 
     local NameTag = Drawing.new("Text")
     NameTag.Visible = false
@@ -30,6 +41,7 @@ local function CreateESPBox(character, player)
     NameTag.Size = 16
     NameTag.Center = true
     NameTag.Outline = true
+    table.insert(drawings, NameTag)
 
     local function Update()
         while character and character.Parent do
