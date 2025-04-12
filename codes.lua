@@ -1,18 +1,10 @@
-local function getNilInstance(name, className)
-    for _, instance in pairs(getnilinstances()) do
-        if instance.ClassName == className and instance.Name == name then
-            return instance
-        end
-    end
-    return nil
-end
-
 local function redeemPromoCode(code)
     local args = {
         [1] = "EnterPromoCode",
         [2] = code
     }
 
+    print("Trying to redeem code:", code) -- Debug
     game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
 end
 
@@ -28,9 +20,11 @@ local promoCodes = {
     "HALLOWEEN2024",
     "TRADEME!",
     "DAUP",
-    "pumpkins2023"
+    "pumpkins2023",
+	"RUBY"
 }
 
 for _, code in ipairs(promoCodes) do
     redeemPromoCode(code)
+    task.wait(2.5) 
 end
