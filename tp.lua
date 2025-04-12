@@ -10,7 +10,7 @@ teleportGui.Parent = player.PlayerGui
 
 mainFrame.Name = "MainFrame"
 mainFrame.Parent = teleportGui
-mainFrame.BackgroundColor3 = Color3.new(20, 20, 20)
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 mainFrame.BorderSizePixel = 0
 mainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
 mainFrame.Size = UDim2.new(0, 300, 0, 200)
@@ -19,7 +19,7 @@ mainFrame.Draggable = true
 
 titleLabel.Name = "TitleLabel"
 titleLabel.Parent = mainFrame
-titleLabel.BackgroundColor3 = Color3.new(0.4, 0.4, 0.4)
+titleLabel.BackgroundColor3 = Color3.fromRGB(102, 102, 102)  -- was (0.4,0.4,0.4)
 titleLabel.BorderSizePixel = 0
 titleLabel.Size = UDim2.new(1, 0, 0, 30)
 titleLabel.Font = Enum.Font.SourceSansBold
@@ -29,7 +29,7 @@ titleLabel.TextSize = 20
 
 playerListFrame.Name = "PlayerListFrame"
 playerListFrame.Parent = mainFrame
-playerListFrame.BackgroundColor3 = Color3.new(20, 20, 20)
+playerListFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 playerListFrame.BorderSizePixel = 0
 playerListFrame.Position = UDim2.new(0, 20, 0, 40)
 playerListFrame.Size = UDim2.new(0, 260, 0, 140)
@@ -49,13 +49,13 @@ local function updatePlayerList()
             local playerButton = Instance.new("TextButton")
             playerButton.Name = otherPlayer.Name
             playerButton.Parent = playerListFrame
-            playerButton.BackgroundColor3 = Color3.new(0.6, 0.6, 0.6)
+            playerButton.BackgroundColor3 = Color3.fromRGB(153, 153, 153) -- was (0.6, 0.6, 0.6)
             playerButton.BorderSizePixel = 0
             playerButton.Size = UDim2.new(0, 240, 0, 30)
             playerButton.Position = UDim2.new(0, 10, 0, yOffset)
             playerButton.Font = Enum.Font.SourceSans
             playerButton.Text = string.format("%s (@%s)", otherPlayer.DisplayName, otherPlayer.Name)
-            playerButton.TextColor3 = Color3.fromRGB(235, 0, 4)
+            playerButton.TextColor3 = Color3.fromRGB(235, 0, 4)  -- RED!
             playerButton.TextSize = 16
 
             playerButton.MouseButton1Click:Connect(function()
@@ -71,7 +71,6 @@ local function updatePlayerList()
         end
     end
 
-    -- Update the canvas size to fit all buttons
     playerListFrame.CanvasSize = UDim2.new(0, 0, 0, yOffset)
 end
 
