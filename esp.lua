@@ -34,19 +34,23 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
-local function CreateESPBox(character, player)
-    local Box = Drawing.new("Square")
-    Box.Visible = false
-    Box.Color = COLOR
-    Box.Thickness = LINE_THICKNESS
-    Box.Filled = false
+local Box = Drawing.new("Square")
+table.insert(drawings, Box)  -- add this line
 
-    local NameTag = Drawing.new("Text")
-    NameTag.Visible = false
-    NameTag.Color = COLOR
-    NameTag.Size = 16
-    NameTag.Center = true
-    NameTag.Outline = true
+Box.Visible = false
+Box.Color = COLOR
+Box.Thickness = LINE_THICKNESS
+Box.Filled = false
+
+local NameTag = Drawing.new("Text")
+table.insert(drawings, NameTag)  -- add this line
+
+NameTag.Visible = false
+NameTag.Color = COLOR
+NameTag.Size = 16
+NameTag.Center = true
+NameTag.Outline = true
+
 
     local function Update()
         while character and character.Parent do
