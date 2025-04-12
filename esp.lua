@@ -1,9 +1,7 @@
-if getgenv().espCleanup then
-    getgenv().espCleanup()
-end
-
+-- Track active ESP objects
 local drawings = {}
 
+-- Cleanup ESP when turned off
 getgenv().espCleanup = function()
     for _, obj in pairs(drawings) do
         if obj.Remove then
@@ -14,9 +12,9 @@ getgenv().espCleanup = function()
     print("ESP Cleaned up!")
 end
 
-local ESP_ENABLED = true -- Toggle ESP on/off
-local NAMETAGS_ENABLED = false -- Toggle NameTags on/off with key
-local COLOR = Color3.fromRGB(255, 0, 0) -- Box color
+local ESP_ENABLED = false  -- Start with ESP OFF
+local NAMETAGS_ENABLED = false  -- Toggle NameTags on/off with key
+local COLOR = Color3.fromRGB(255, 0, 0)  -- Box color
 local LINE_THICKNESS = 2
 local REFRESH_RATE = 0.01
 
