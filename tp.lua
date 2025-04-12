@@ -23,24 +23,13 @@ titleLabel.BackgroundColor3 = Color3.new(0.4, 0.4, 0.4)
 titleLabel.BorderSizePixel = 0
 titleLabel.Size = UDim2.new(1, 0, 0, 30)
 titleLabel.Font = Enum.Font.SourceSansBold
-titleLabel.Text = "Cable TP GUI"
-titleLabel.TextColor3 = Color3.new(1, 1, 1)
+titleLabel.Text = "RS - TP GUI"
+titleLabel.TextColor3 = Color3.new(235, 0, 4)
 titleLabel.TextSize = 20
-
-closeButton.Name = "CloseButton"
-closeButton.Parent = mainFrame
-closeButton.BackgroundColor3 = Color3.new(0.8, 0, 0)
-closeButton.BorderSizePixel = 0
-closeButton.Position = UDim2.new(1, -30, 0, 0)
-closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Font = Enum.Font.SourceSansBold
-closeButton.Text = "X"
-closeButton.TextColor3 = Color3.new(1, 1, 1)
-closeButton.TextSize = 20
 
 playerListFrame.Name = "PlayerListFrame"
 playerListFrame.Parent = mainFrame
-playerListFrame.BackgroundColor3 = Color3.new(0.4, 0.4, 0.4)
+playerListFrame.BackgroundColor3 = Color3.new(20, 20, 20)
 playerListFrame.BorderSizePixel = 0
 playerListFrame.Position = UDim2.new(0, 20, 0, 40)
 playerListFrame.Size = UDim2.new(0, 260, 0, 140)
@@ -66,7 +55,7 @@ local function updatePlayerList()
             playerButton.Position = UDim2.new(0, 10, 0, yOffset)
             playerButton.Font = Enum.Font.SourceSans
             playerButton.Text = string.format("%s (@%s)", otherPlayer.DisplayName, otherPlayer.Name)
-            playerButton.TextColor3 = Color3.new(0, 0, 0)
+            playerButton.TextColor3 = Color3.new(235, 0, 4)
             playerButton.TextSize = 16
 
             playerButton.MouseButton1Click:Connect(function()
