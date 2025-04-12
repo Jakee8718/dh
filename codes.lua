@@ -6,13 +6,31 @@ local function getNilInstance(name, className)
     end
     return nil
 end
+
 local function redeemPromoCode(code)
     local args = {
         [1] = "EnterPromoCode",
         [2] = code
     }
-    
+
     game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
 end
-redeemPromoCode("50MDHC", "Duck", "Watch", "SHRIMP", "VIP", "2025", "THANKSGIVING24", "DACARNIVAL",
-        "HALLOWEEN2024", "TRADEME!", "DAUP", "pumpkins2023")
+
+local promoCodes = {
+    "50MDHC",
+    "Duck",
+    "Watch",
+    "SHRIMP",
+    "VIP",
+    "2025",
+    "THANKSGIVING24",
+    "DACARNIVAL",
+    "HALLOWEEN2024",
+    "TRADEME!",
+    "DAUP",
+    "pumpkins2023"
+}
+
+for _, code in ipairs(promoCodes) do
+    redeemPromoCode(code)
+end
