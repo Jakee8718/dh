@@ -109,9 +109,10 @@ local function OnPlayerAdded(player)
         end
     end
 
+    -- Connect the CharacterAdded event for respawning
     player.CharacterAdded:Connect(SetupCharacter)
 
-    -- If the player already has a character
+    -- If the player already has a character when they join, set up the ESP
     if player.Character then
         SetupCharacter(player.Character)
     end
