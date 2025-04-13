@@ -3,7 +3,7 @@ local UserInputService = game:GetService("UserInputService")
 local ESP_ENABLED = false -- Default ESP off
 local NAMETAGS_ENABLED = false -- Toggle NameTags on/off with key
 local COLOR = Color3.fromRGB(255, 0, 0) -- Box color
-local LINE_THICKNESS = 10
+local LINE_THICKNESS = 2
 local REFRESH_RATE = 0.01
 
 local Players = game:GetService("Players")
