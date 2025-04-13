@@ -1,4 +1,5 @@
 -- Variables for ESP
+local UserInputService = game:GetService("UserInputService")
 local ESP_ENABLED = false -- Default ESP off
 local NAMETAGS_ENABLED = false -- Toggle NameTags on/off with key
 local COLOR = Color3.fromRGB(255, 0, 0) -- Box color
