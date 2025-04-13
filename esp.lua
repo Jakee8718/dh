@@ -1,17 +1,19 @@
+-- Variables for ESP
 local ESP_ENABLED = false
 local NAMETAGS_ENABLED = false
 local COLOR = Color3.fromRGB(255, 0, 0)
 local LINE_THICKNESS = 2
 local REFRESH_RATE = 0.01
 
+local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local Camera = game.Workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
-local UserInputService = game:GetService("UserInputService")
 
 local drawings = {}
 local running = false
 
+-- Toggle NameTags with "N"
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if not gameProcessed and input.KeyCode == Enum.KeyCode.N then
         NAMETAGS_ENABLED = not NAMETAGS_ENABLED
@@ -26,8 +28,9 @@ end
 function DisableESP()
     ESP_ENABLED = false
     running = false
-    for _, drawing in pairs(drawings) do
-        drawing.Visible = false
+    for _, objects in pairs(drawings) do
+        if objects.Box then objects.Box.Visible = false end
+        if objects.NameTag then objects.NameTag.Visible = false end
     end
 end
 
@@ -37,7 +40,6 @@ local function CreateESPBox(character, player)
     Box.Color = COLOR
     Box.Thickness = LINE_THICKNESS
     Box.Filled = false
-    table.insert(drawings, Box)
 
     local NameTag = Drawing.new("Text")
     NameTag.Visible = false
@@ -45,10 +47,11 @@ local function CreateESPBox(character, player)
     NameTag.Size = 16
     NameTag.Center = true
     NameTag.Outline = true
-    table.insert(drawings, NameTag)
+
+    drawings[player] = { Box = Box, NameTag = NameTag }
 
     local function Update()
-        while running do
+        while running and drawings[player] do
             if ESP_ENABLED and character and character.Parent then
                 local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
                 if HumanoidRootPart then
@@ -80,6 +83,13 @@ local function CreateESPBox(character, player)
             end
             task.wait(REFRESH_RATE)
         end
+
+        -- Cleanup when stopped
+        if drawings[player] then
+            Box:Remove()
+            NameTag:Remove()
+            drawings[player] = nil
+        end
     end
 
     coroutine.wrap(Update)()
@@ -96,11 +106,20 @@ local function OnPlayerAdded(player)
     end
 end
 
+local function OnPlayerRemoving(player)
+    if drawings[player] then
+        if drawings[player].Box then drawings[player].Box:Remove() end
+        if drawings[player].NameTag then drawings[player].NameTag:Remove() end
+        drawings[player] = nil
+    end
+end
+
 for _, player in pairs(Players:GetPlayers()) do
     OnPlayerAdded(player)
 end
 
 Players.PlayerAdded:Connect(OnPlayerAdded)
+Players.PlayerRemoving:Connect(OnPlayerRemoving)
 
 print("ESP with NameTags Script Loaded!")
 
