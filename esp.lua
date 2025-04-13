@@ -1,45 +1,49 @@
 -- Variables for ESP
-local ESP_ENABLED = false
-local NAMETAGS_ENABLED = false
-local COLOR = Color3.fromRGB(255, 0, 0)
+local ESP_ENABLED = false -- Default ESP off
+local NAMETAGS_ENABLED = false -- Toggle NameTags on/off with key
+local COLOR = Color3.fromRGB(255, 0, 0) -- Box color
 local LINE_THICKNESS = 2
 local REFRESH_RATE = 0.01
-
 local UserInputService = game:GetService("UserInputService")
+
 local Players = game:GetService("Players")
 local Camera = game.Workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
-local drawings = {}
-local running = false
+local drawings = {}  -- Store drawings for cleanup
+local running = false -- Track whether ESP is running
 
--- Toggle NameTags with "N"
+-- Toggle NameTags on key press "N"
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if not gameProcessed and input.KeyCode == Enum.KeyCode.N then
         NAMETAGS_ENABLED = not NAMETAGS_ENABLED
     end
 end)
 
+-- Function to enable ESP
 function EnableESP()
     ESP_ENABLED = true
     running = true
 end
 
+-- Function to disable ESP
 function DisableESP()
     ESP_ENABLED = false
     running = false
-    for _, objects in pairs(drawings) do
-        if objects.Box then objects.Box.Visible = false end
-        if objects.NameTag then objects.NameTag.Visible = false end
+    -- Hide all ESP elements
+    for _, drawing in pairs(drawings) do
+        drawing.Visible = false
     end
 end
 
+-- Create ESP Box and NameTag
 local function CreateESPBox(character, player)
     local Box = Drawing.new("Square")
     Box.Visible = false
     Box.Color = COLOR
     Box.Thickness = LINE_THICKNESS
     Box.Filled = false
+    table.insert(drawings, Box)
 
     local NameTag = Drawing.new("Text")
     NameTag.Visible = false
@@ -47,11 +51,10 @@ local function CreateESPBox(character, player)
     NameTag.Size = 16
     NameTag.Center = true
     NameTag.Outline = true
-
-    drawings[player] = { Box = Box, NameTag = NameTag }
+    table.insert(drawings, NameTag)
 
     local function Update()
-        while running and drawings[player] do
+        while running do
             if ESP_ENABLED and character and character.Parent then
                 local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
                 if HumanoidRootPart then
@@ -83,46 +86,47 @@ local function CreateESPBox(character, player)
             end
             task.wait(REFRESH_RATE)
         end
-
-        -- Cleanup when stopped
-        if drawings[player] then
-            Box:Remove()
-            NameTag:Remove()
-            drawings[player] = nil
-        end
+        -- Cleanup after loop stops
+        Box:Remove()
+        NameTag:Remove()
     end
 
     coroutine.wrap(Update)()
 end
 
+-- Manage players entering the game
 local function OnPlayerAdded(player)
-    if player ~= LocalPlayer then
-        player.CharacterAdded:Connect(function(character)
+    if player == LocalPlayer then return end
+
+    local function SetupCharacter(character)
+        -- Small delay to wait for HumanoidRootPart
+        repeat
+            task.wait(0.1)
+        until character:FindFirstChild("HumanoidRootPart") or not character.Parent
+
+        if character.Parent then
             CreateESPBox(character, player)
-        end)
-        if player.Character then
-            CreateESPBox(player.Character, player)
         end
     end
-end
 
-local function OnPlayerRemoving(player)
-    if drawings[player] then
-        if drawings[player].Box then drawings[player].Box:Remove() end
-        if drawings[player].NameTag then drawings[player].NameTag:Remove() end
-        drawings[player] = nil
+    player.CharacterAdded:Connect(SetupCharacter)
+
+    -- If the player already has a character
+    if player.Character then
+        SetupCharacter(player.Character)
     end
 end
 
+-- Initialize for all players currently in the game
 for _, player in pairs(Players:GetPlayers()) do
     OnPlayerAdded(player)
 end
 
 Players.PlayerAdded:Connect(OnPlayerAdded)
-Players.PlayerRemoving:Connect(OnPlayerRemoving)
 
 print("ESP with NameTags Script Loaded!")
 
+-- Return the control functions
 return {
     EnableESP = EnableESP,
     DisableESP = DisableESP
