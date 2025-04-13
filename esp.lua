@@ -24,7 +24,18 @@ end)
 function EnableESP()
     ESP_ENABLED = true
     running = true
+
+    -- Set up ESP for all players already in the game
+    for _, player in pairs(Players:GetPlayers()) do
+        if player.Character then
+            CreateESPBox(player.Character, player)
+        end
+        player.CharacterAdded:Connect(function(character)
+            CreateESPBox(character, player)
+        end)
+    end
 end
+
 
 -- Function to disable ESP
 function DisableESP()
