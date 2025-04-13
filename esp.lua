@@ -4,6 +4,7 @@ local NAMETAGS_ENABLED = false -- Toggle NameTags on/off with key
 local COLOR = Color3.fromRGB(255, 0, 0) -- Box color
 local LINE_THICKNESS = 2
 local REFRESH_RATE = 0.01
+local UserInputService = game:GetService("UserInputService")
 
 local Players = game:GetService("Players")
 local Camera = game.Workspace.CurrentCamera
