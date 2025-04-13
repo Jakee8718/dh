@@ -24,8 +24,6 @@ end)
 function EnableESP()
     ESP_ENABLED = true
     running = true
-    -- Start the drawing update loop
-    coroutine.wrap(UpdateESP)()
 end
 
 -- Function to disable ESP
