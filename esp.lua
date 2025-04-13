@@ -2,9 +2,8 @@
 local ESP_ENABLED = false -- Default ESP off
 local NAMETAGS_ENABLED = false -- Toggle NameTags on/off with key
 local COLOR = Color3.fromRGB(255, 0, 0) -- Box color
-local LINE_THICKNESS = 2
+local LINE_THICKNESS = 10
 local REFRESH_RATE = 0.01
-local UserInputService = game:GetService("UserInputService")
 
 local Players = game:GetService("Players")
 local Camera = game.Workspace.CurrentCamera
@@ -24,18 +23,9 @@ end)
 function EnableESP()
     ESP_ENABLED = true
     running = true
-
-    -- Set up ESP for all players already in the game
-    for _, player in pairs(Players:GetPlayers()) do
-        if player.Character then
-            CreateESPBox(player.Character, player)
-        end
-        player.CharacterAdded:Connect(function(character)
-            CreateESPBox(character, player)
-        end)
-    end
+    -- Start the drawing update loop
+    coroutine.wrap(UpdateESP)()
 end
-
 
 -- Function to disable ESP
 function DisableESP()
@@ -65,31 +55,35 @@ local function CreateESPBox(character, player)
     table.insert(drawings, NameTag)
 
     local function Update()
-        while running do
-            if ESP_ENABLED and character and character.Parent then
-                local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-                if HumanoidRootPart then
-                    local Vector, OnScreen = Camera:WorldToViewportPoint(HumanoidRootPart.Position)
-                    if OnScreen then
-                        Box.Size = Vector2.new(50, 100)
-                        Box.Position = Vector2.new(Vector.X - 25, Vector.Y - 50)
-                        Box.Visible = true
+        while running do  -- Run only when ESP is enabled
+            if ESP_ENABLED then
+                if character and character.Parent then
+                    local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                    if HumanoidRootPart then
+                        local Vector, OnScreen = Camera:WorldToViewportPoint(HumanoidRootPart.Position)
+                        if OnScreen then
+                            -- ESP Box
+                            Box.Size = Vector2.new(50, 100)
+                            Box.Position = Vector2.new(Vector.X - 25, Vector.Y - 50)
+                            Box.Visible = true
 
-                        if NAMETAGS_ENABLED then
-                            local distance = math.floor((HumanoidRootPart.Position - Camera.CFrame.Position).Magnitude)
-                            NameTag.Text = string.format("%s (@%s)\n[%d studs]", player.DisplayName, player.Name, distance)
-                            NameTag.Position = Vector2.new(Vector.X, Vector.Y - 65)
-                            NameTag.Visible = true
+                            -- NameTag
+                            if NAMETAGS_ENABLED then
+                                local distance = math.floor((HumanoidRootPart.Position - Camera.CFrame.Position).Magnitude)
+                                NameTag.Text = string.format("%s (@%s)\n[%d studs]", player.DisplayName, player.Name, distance)
+                                NameTag.Position = Vector2.new(Vector.X, Vector.Y - 65)
+                                NameTag.Visible = true
+                            else
+                                NameTag.Visible = false
+                            end
                         else
+                            Box.Visible = false
                             NameTag.Visible = false
                         end
                     else
                         Box.Visible = false
                         NameTag.Visible = false
                     end
-                else
-                    Box.Visible = false
-                    NameTag.Visible = false
                 end
             else
                 Box.Visible = false
@@ -97,35 +91,20 @@ local function CreateESPBox(character, player)
             end
             task.wait(REFRESH_RATE)
         end
-        -- Cleanup after loop stops
-        Box:Remove()
-        NameTag:Remove()
     end
 
-    coroutine.wrap(Update)()
+    coroutine.wrap(Update)()  -- Start the update loop for this character
 end
 
 -- Manage players entering the game
 local function OnPlayerAdded(player)
-    if player == LocalPlayer then return end
-
-    local function SetupCharacter(character)
-        -- Small delay to wait for HumanoidRootPart
-        repeat
-            task.wait(0.1)
-        until character:FindFirstChild("HumanoidRootPart") or not character.Parent
-
-        if character.Parent then
+    if player ~= LocalPlayer then
+        player.CharacterAdded:Connect(function(character)
             CreateESPBox(character, player)
+        end)
+        if player.Character then
+            CreateESPBox(player.Character, player)
         end
-    end
-
-    -- Connect the CharacterAdded event for respawning
-    player.CharacterAdded:Connect(SetupCharacter)
-
-    -- If the player already has a character when they join, set up the ESP
-    if player.Character then
-        SetupCharacter(player.Character)
     end
 end
 
