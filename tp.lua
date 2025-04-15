@@ -90,11 +90,13 @@ local function updatePlayerList(filter)
             local nameMatch = otherPlayer.Name:lower():find(filter:lower())
             local displayMatch = otherPlayer.DisplayName:lower():find(filter:lower())
             if filter == "" or nameMatch or displayMatch then
-                local entryFrame = Instance.new("Frame", playerListFrame)
+                local entryFrame = Instance.new("TextButton", playerListFrame) -- <- Make the whole frame a button
                 entryFrame.Size = UDim2.new(0, 260, 0, 30)
                 entryFrame.Position = UDim2.new(0, 10, 0, yOffset)
                 entryFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
                 entryFrame.BorderSizePixel = 0
+                entryFrame.Text = ""
+                entryFrame.AutoButtonColor = true  -- <- This enables hover dimming!
 
                 local avatar = Instance.new("ImageLabel", entryFrame)
                 avatar.Size = UDim2.new(0, 24, 0, 24)
@@ -102,7 +104,7 @@ local function updatePlayerList(filter)
                 avatar.BackgroundTransparency = 1
                 avatar.Image = string.format("https://www.roblox.com/headshot-thumbnail/image?userId=%s&width=420&height=420&format=png", otherPlayer.UserId)
 
-                local nameLabel = Instance.new("TextButton", entryFrame)
+                local nameLabel = Instance.new("TextLabel", entryFrame) -- TextLabel now, since clicking is handled by the frame
                 nameLabel.Size = UDim2.new(1, -35, 1, 0)
                 nameLabel.Position = UDim2.new(0, 30, 0, 0)
                 nameLabel.BackgroundTransparency = 1
@@ -112,7 +114,7 @@ local function updatePlayerList(filter)
                 nameLabel.TextSize = 16
                 nameLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-                nameLabel.MouseButton1Click:Connect(function()
+                entryFrame.MouseButton1Click:Connect(function()
                     targetPlayer = otherPlayer
                     player.Character.HumanoidRootPart.CFrame = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") and targetPlayer.Character.HumanoidRootPart.CFrame or player.Character.HumanoidRootPart.CFrame
                 end)
@@ -123,6 +125,7 @@ local function updatePlayerList(filter)
     end
     playerListFrame.CanvasSize = UDim2.new(0, 0, 0, yOffset)
 end
+
 
 searchBox:GetPropertyChangedSignal("Text"):Connect(function()
     updatePlayerList(searchBox.Text)
