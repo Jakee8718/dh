@@ -143,7 +143,7 @@ game.Players.PlayerRemoving:Connect(function() updatePlayerList(searchBox.Text) 
 
 task.spawn(function()
     while true do
-        task.wait(0.5)
+        task.wait(0.00001)
         if loopActive and targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
             player.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
         end
