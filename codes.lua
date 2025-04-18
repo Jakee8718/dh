@@ -5,9 +5,6 @@ local function redeemPromoCode(code)
     }
 
     print("Trying to redeem code:", code) -- Debug
-	if redeemPromoCode == true
-		then print("Successfully redeemed:", code)
-	else print("Failed:", code)
     game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
 end
 
