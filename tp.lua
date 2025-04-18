@@ -5,9 +5,11 @@ local titleLabel = Instance.new("TextLabel")
 local closeButton = Instance.new("TextButton")
 local searchBox = Instance.new("TextBox")
 local loopButton = Instance.new("TextButton")
+local targetButton = Instance.new("TextButton")
 local playerListFrame = Instance.new("ScrollingFrame")
 
 local loopActive = false
+local targetDodgeActive = false
 local targetPlayer = nil
 
 teleportGui.Name = "TeleportGui"
@@ -68,12 +70,23 @@ loopButton.Text = "Loop: Off"
 loopButton.TextColor3 = Color3.fromRGB(235, 0, 4)
 loopButton.TextSize = 14
 
+targetButton.Name = "TargetButton"
+targetButton.Parent = mainFrame
+targetButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+targetButton.BorderSizePixel = 0
+targetButton.Position = UDim2.new(0, 215, 0, 65)  -- Below LoopButton
+targetButton.Size = UDim2.new(0, 75, 0, 25)
+targetButton.Font = Enum.Font.SourceSans
+targetButton.Text = "Target: Off"
+targetButton.TextColor3 = Color3.fromRGB(235, 0, 4)
+targetButton.TextSize = 14
+
 playerListFrame.Name = "PlayerListFrame"
 playerListFrame.Parent = mainFrame
 playerListFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 playerListFrame.BorderSizePixel = 0
-playerListFrame.Position = UDim2.new(0, 10, 0, 65)
-playerListFrame.Size = UDim2.new(0, 280, 0, 145)
+playerListFrame.Position = UDim2.new(0, 10, 0, 95) -- Adjusted downward
+playerListFrame.Size = UDim2.new(0, 280, 0, 115) -- Slightly reduced height
 playerListFrame.ScrollBarThickness = 6
 playerListFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 
@@ -90,13 +103,13 @@ local function updatePlayerList(filter)
             local nameMatch = otherPlayer.Name:lower():find(filter:lower())
             local displayMatch = otherPlayer.DisplayName:lower():find(filter:lower())
             if filter == "" or nameMatch or displayMatch then
-                local entryFrame = Instance.new("TextButton", playerListFrame) -- <- Make the whole frame a button
+                local entryFrame = Instance.new("TextButton", playerListFrame)
                 entryFrame.Size = UDim2.new(0, 260, 0, 30)
                 entryFrame.Position = UDim2.new(0, 10, 0, yOffset)
                 entryFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
                 entryFrame.BorderSizePixel = 0
                 entryFrame.Text = ""
-                entryFrame.AutoButtonColor = true  -- <- This enables hover dimming!
+                entryFrame.AutoButtonColor = true
 
                 local avatar = Instance.new("ImageLabel", entryFrame)
                 avatar.Size = UDim2.new(0, 24, 0, 24)
@@ -104,7 +117,7 @@ local function updatePlayerList(filter)
                 avatar.BackgroundTransparency = 1
                 avatar.Image = string.format("https://www.roblox.com/headshot-thumbnail/image?userId=%s&width=420&height=420&format=png", otherPlayer.UserId)
 
-                local nameLabel = Instance.new("TextLabel", entryFrame) -- TextLabel now, since clicking is handled by the frame
+                local nameLabel = Instance.new("TextLabel", entryFrame)
                 nameLabel.Size = UDim2.new(1, -35, 1, 0)
                 nameLabel.Position = UDim2.new(0, 30, 0, 0)
                 nameLabel.BackgroundTransparency = 1
@@ -126,7 +139,6 @@ local function updatePlayerList(filter)
     playerListFrame.CanvasSize = UDim2.new(0, 0, 0, yOffset)
 end
 
-
 searchBox:GetPropertyChangedSignal("Text"):Connect(function()
     updatePlayerList(searchBox.Text)
 end)
@@ -134,7 +146,18 @@ end)
 loopButton.MouseButton1Click:Connect(function()
     if targetPlayer then
         loopActive = not loopActive
+        targetDodgeActive = false
         loopButton.Text = loopActive and "Loop: On" or "Loop: Off"
+        targetButton.Text = "Target: Off"
+    end
+end)
+
+targetButton.MouseButton1Click:Connect(function()
+    if targetPlayer then
+        targetDodgeActive = not targetDodgeActive
+        loopActive = false
+        targetButton.Text = targetDodgeActive and "Target: On" or "Target: Off"
+        loopButton.Text = "Loop: Off"
     end
 end)
 
@@ -146,6 +169,13 @@ task.spawn(function()
         task.wait(0.00001)
         if loopActive and targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
             player.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        elseif targetDodgeActive and targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local randomOffset = Vector3.new(
+                math.random(-5, 5),
+                math.random(2, 5),
+                math.random(-5, 5)
+            )
+            player.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame + randomOffset
         end
     end
 end)
