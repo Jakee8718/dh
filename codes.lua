@@ -5,6 +5,9 @@ local function redeemPromoCode(code)
     }
 
     print("Trying to redeem code:", code) -- Debug
+	if redeemPromoCode == true
+		then print("Successfully redeemed:", code)
+	else print("Failed:", code)
     game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
 end
 
@@ -26,5 +29,5 @@ local promoCodes = {
 
 for _, code in ipairs(promoCodes) do
     redeemPromoCode(code)
-    task.wait(2.5) 
+    task.wait(5) 
 end
