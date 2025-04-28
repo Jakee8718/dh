@@ -4,24 +4,17 @@ local Teleports = {}
 
 -- 1) Locations
 Teleports.locations = {
-    Revolver = CFrame.new(-636.762, 21.748, -125,627),
-    Bank     = CFrame.new(-405.471, 21.748, -284,517),
-    Military = CFrame.new(38.660, 25.253, -869.897),
-    LMG = CFrame.new(-625.019, 23.244, -298.706),
-    Downhill Food = CFrame.new(-331,280, 23.681, -298.417),
-    
+    Revolver = CFrame.new(-648.365356, 22.4022942, -119.864662),
+    Bank     = CFrame.new(100,       22,         -50),
+    TacoShop = CFrame.new(300,       20,         -100),
     -- etc…
 }
 
 -- 2) Icons
 Teleports.icons = {
     Revolver = "rbxassetid://96808607551383",
-    Bank     = "rbxassetid://97059750033187",  -- replace with your Bank icon ID
-    Military = "rbxassetid://16481049067",
-    LMG = "rbxassetid://111111",
-    Downhill Food = "rbxassetid://123444",
-    
-    
+    Bank     = "rbxassetid://12345678901234",  -- replace with your Bank icon ID
+    TacoShop = "rbxassetid://23456789012345",  -- replace with your Taco Shop icon ID
     -- etc…
 }
 
