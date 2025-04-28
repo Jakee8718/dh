@@ -13,17 +13,6 @@ Teleports.locations = {
     -- etc…
 }
 
--- 2) Icons
-Teleports.icons = {
-    Revolver = "rbxassetid://96808607551383",
-    Bank     = "rbxassetid://97059750033187",  -- replace with your Bank icon ID
-    Military = "rbxassetid://16481049067",
-    LMG = "rbxassetid://111111",
-    Downhill Food = "rbxassetid://123444",
-    
-    
-    -- etc…
-}
 
 -- 3) Safe teleport function
 function Teleports.teleport(name)
